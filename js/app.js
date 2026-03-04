@@ -334,14 +334,20 @@ function initTables() {
       {
         title: "AWS Roles",
         data: "AWSRoles",
-        render: (data) =>
-          data ? `<div class="summary-cell">${data}</div>` : "-",
+        render: (roles) => {
+          if (!roles || roles.length === 0) return "-";
+          const items = roles.map((r) => `<li><code>${r}</code></li>`).join("");
+          return `<ul class="summary-list">${items}</ul>`;
+        },
       },
       {
         title: "TFE Roles",
         data: "TFERoles",
-        render: (data) =>
-          data ? `<div class="summary-cell">${data}</div>` : "-",
+        render: (roles) => {
+          if (!roles || roles.length === 0) return "-";
+          const items = roles.map((r) => `<li><code>${r}</code></li>`).join("");
+          return `<ul class="summary-list">${items}</ul>`;
+        },
       },
       {
         title: "CIDRs",
@@ -357,6 +363,7 @@ function initTables() {
     ],
     language: { search: "Search:", lengthMenu: "Show _MENU_ entries" },
     scrollX: true,
+    autoWidth: false,
   });
 
   tables.accounts = $("#table-accounts").DataTable({
