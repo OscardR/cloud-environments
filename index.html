@@ -1,452 +1,223 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AWS Cloud Environment Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --sidebar-width: 280px;
-            --header-height: 60px;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-        }
-        
-        body {
-            min-height: 100vh;
-            background: var(--bg-light);
-        }
-        
-        .sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            height: calc(100vh - var(--header-height));
-            position: fixed;
-            left: 0;
-            top: var(--header-height);
-            background: #fff;
-            border-right: 1px solid var(--border-color);
-            overflow-y: auto;
-            z-index: 100;
-        }
-        
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 20px;
-            min-height: calc(100vh - var(--header-height));
-            margin-top: var(--header-height);
-        }
-        
-        .header {
-            height: var(--header-height);
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            color: #fff;
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .header .aws-icon {
-            font-size: 1.5rem;
-        }
-        
-        .header-nav {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .header-nav a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-        
-        .header-nav a:hover {
-            color: #fff;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .burger-menu {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-        
-        .filter-section {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .filter-section:last-child {
-            border-bottom: none;
-        }
-        
-        .filter-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-        
-        .filter-select {
-            width: 100%;
-        }
-        
-        .card {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin-bottom: 24px;
-        }
-        
-        .card-header {
-            background: #fff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 16px 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .card-header .icon {
-            color: #0d6efd;
-            margin-right: 8px;
-        }
-        
-        .card-body {
-            padding: 0;
-        }
-        
-        .card-body > .table {
-            margin-bottom: 0;
-        }
-        
-        .table {
-            font-size: 0.875rem;
-        }
-        
-        .table thead th {
-            background: #f8f9fa;
-            border-bottom: 2px solid var(--border-color);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        
-        .table tbody tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .table td, .table th {
-            padding: 12px 16px;
-            vertical-align: middle;
-        }
-        
-        .btn-clear {
-            width: 100%;
-            margin-top: 15px;
-            padding: 10px;
-            font-weight: 500;
-        }
-        
-        .stats-bar {
-            background: #fff;
-            padding: 20px 24px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .stat-value {
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-        
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.875rem;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            min-height: 38px;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            padding: 2px 0;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
-            display: inline-flex;
-            align-items: center;
-            background-color: #0d6efd;
-            border: 1px solid #0d6efd;
-            color: #fff;
-            border-radius: 4px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin: 0;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
-            color: #fff;
-            margin-right: 6px;
-            font-weight: bold;
-            font-size: 0.875rem;
-            line-height: 1;
-            opacity: 0.8;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove:hover {
-            opacity: 1;
-        }
-        
-        .cluster-link {
-            color: #0d6efd;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .cluster-link:hover {
-            text-decoration: underline;
-        }
-        
-        @media (max-width: 992px) {
-            .header-nav {
-                display: none;
-            }
-            
-            .header-nav.show {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: var(--header-height);
-                left: 0;
-                right: 0;
-                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-                padding: 16px;
-                gap: 8px;
-            }
-            
-            .burger-menu {
-                display: block;
-                margin-left: auto;
-            }
-            
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-        }
-    </style>
-</head>
-<body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+      rel="stylesheet"
+    />
+    <link href="css/styles.css" rel="stylesheet" />
+  </head>
+  <body>
     <header class="header">
-        <h1><i class="bi bi-aws aws-icon"></i> AWS Cloud Environment Dashboard</h1>
-        <nav class="header-nav" id="headerNav">
-            <a href="#accounts"><i class="bi bi-cloud"></i> Accounts</a>
-            <a href="#cidrs"><i class="bi bi-hdd"></i> CIDRs</a>
-            <a href="#clusters"><i class="bi bi-diagram-3"></i> Clusters</a>
-            <a href="#adfs"><i class="bi bi-person-badge"></i> ADFS</a>
-            <a href="#tfe"><i class="bi bi-building"></i> TFE</a>
-        </nav>
-        <button class="burger-menu" id="burgerMenu">
-            <i class="bi bi-list"></i>
-        </button>
+      <h1>
+        <i class="bi bi-aws aws-icon"></i> AWS Cloud Environment Dashboard
+      </h1>
+      <nav class="header-nav" id="headerNav">
+        <a href="#accounts"><i class="bi bi-cloud"></i> Accounts</a>
+        <a href="#cidrs"><i class="bi bi-hdd"></i> CIDRs</a>
+        <a href="#clusters"><i class="bi bi-diagram-3"></i> Clusters</a>
+        <a href="#adfs"><i class="bi bi-person-badge"></i> ADFS</a>
+        <a href="#tfe"><i class="bi bi-building"></i> TFE</a>
+      </nav>
+      <button class="burger-menu" id="burgerMenu">
+        <i class="bi bi-list"></i>
+      </button>
     </header>
 
     <aside class="sidebar">
-        <div class="filter-section">
-            <div class="filter-title"><i class="bi bi-funnel"></i> Filters</div>
-        </div>
-        
-        <div class="filter-section">
-            <div class="filter-title">Application</div>
-            <select id="filter-application" class="filter-select" multiple="multiple"></select>
-        </div>
-        
-        <div class="filter-section">
-            <div class="filter-title">Environment</div>
-            <select id="filter-environment" class="filter-select" multiple="multiple"></select>
-        </div>
-        
-        <div class="filter-section">
-            <div class="filter-title">Region</div>
-            <select id="filter-region" class="filter-select" multiple="multiple"></select>
-        </div>
-        
-        <div class="filter-section">
-            <button class="btn btn-outline-secondary btn-clear" id="clear-filters">
-                <i class="bi bi-x-circle"></i> Clear All Filters
-            </button>
-        </div>
+      <div class="filter-section">
+        <div class="filter-title"><i class="bi bi-funnel"></i> Filters</div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">Application</div>
+        <select
+          id="filter-application"
+          class="filter-select"
+          multiple="multiple"
+        ></select>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">Environment</div>
+        <select
+          id="filter-environment"
+          class="filter-select"
+          multiple="multiple"
+        ></select>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">Region</div>
+        <select
+          id="filter-region"
+          class="filter-select"
+          multiple="multiple"
+        ></select>
+      </div>
+
+      <div class="filter-section">
+        <button class="btn btn-outline-secondary btn-clear" id="clear-filters">
+          <i class="bi bi-x-circle"></i> Clear All Filters
+        </button>
+      </div>
     </aside>
 
     <main class="main-content">
-        <div class="stats-bar">
-            <div class="stat-item">
-                <i class="bi bi-cloud text-primary fs-5"></i>
-                <div>
-                    <div class="stat-value" id="stat-accounts">0</div>
-                    <div class="stat-label">Accounts</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <i class="bi bi-hdd text-success fs-5"></i>
-                <div>
-                    <div class="stat-value" id="stat-cidrs">0</div>
-                    <div class="stat-label">CIDRs</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <i class="bi bi-diagram-3 text-info fs-5"></i>
-                <div>
-                    <div class="stat-value" id="stat-clusters">0</div>
-                    <div class="stat-label">Clusters</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <i class="bi bi-person-badge text-warning fs-5"></i>
-                <div>
-                    <div class="stat-value" id="stat-adfs">0</div>
-                    <div class="stat-label">ADFS Roles</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <i class="bi bi-building text-danger fs-5"></i>
-                <div>
-                    <div class="stat-value" id="stat-tfe">0</div>
-                    <div class="stat-label">TFE Roles</div>
-                </div>
-            </div>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <i class="bi bi-cloud text-primary fs-5"></i>
+          <div>
+            <div class="stat-value" id="stat-accounts">0</div>
+            <div class="stat-label">Accounts</div>
+          </div>
         </div>
+        <div class="stat-item">
+          <i class="bi bi-hdd text-success fs-5"></i>
+          <div>
+            <div class="stat-value" id="stat-cidrs">0</div>
+            <div class="stat-label">CIDRs</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="bi bi-diagram-3 text-info fs-5"></i>
+          <div>
+            <div class="stat-value" id="stat-clusters">0</div>
+            <div class="stat-label">Clusters</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="bi bi-person-badge text-warning fs-5"></i>
+          <div>
+            <div class="stat-value" id="stat-adfs">0</div>
+            <div class="stat-label">ADFS Roles</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="bi bi-building text-danger fs-5"></i>
+          <div>
+            <div class="stat-value" id="stat-tfe">0</div>
+            <div class="stat-label">TFE Roles</div>
+          </div>
+        </div>
+      </div>
 
-        <div class="row" id="accounts">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <span><i class="bi bi-cloud icon"></i> AWS Accounts</span>
-                        <span class="badge bg-primary rounded-pill" id="account-count">0</span>
-                    </div>
-                    <div class="card-body">
-                        <table id="table-accounts" class="table table-striped" style="width:100%"></table>
-                    </div>
-                </div>
+      <div class="row" id="accounts">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-cloud icon"></i> AWS Accounts</span>
+              <span class="badge bg-primary rounded-pill" id="account-count"
+                >0</span
+              >
             </div>
+            <div class="card-body">
+              <table
+                id="table-accounts"
+                class="table table-striped"
+                style="width: 100%"
+              ></table>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="row" id="cidrs">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <span><i class="bi bi-hdd icon"></i> CIDR Allocations</span>
-                        <span class="badge bg-success rounded-pill" id="cidr-count">0</span>
-                    </div>
-                    <div class="card-body">
-                        <table id="table-cidr" class="table table-striped" style="width:100%"></table>
-                    </div>
-                </div>
+      <div class="row" id="cidrs">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-hdd icon"></i> CIDR Allocations</span>
+              <span class="badge bg-success rounded-pill" id="cidr-count"
+                >0</span
+              >
             </div>
+            <div class="card-body">
+              <table
+                id="table-cidr"
+                class="table table-striped"
+                style="width: 100%"
+              ></table>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="row" id="clusters">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <span><i class="bi bi-diagram-3 icon"></i> EKS Clusters</span>
-                        <span class="badge bg-info rounded-pill" id="cluster-count">0</span>
-                    </div>
-                    <div class="card-body">
-                        <table id="table-cluster" class="table table-striped" style="width:100%"></table>
-                    </div>
-                </div>
+      <div class="row" id="clusters">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-diagram-3 icon"></i> EKS Clusters</span>
+              <span class="badge bg-info rounded-pill" id="cluster-count"
+                >0</span
+              >
             </div>
+            <div class="card-body">
+              <table
+                id="table-cluster"
+                class="table table-striped"
+                style="width: 100%"
+              ></table>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="row" id="adfs">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <span><i class="bi bi-person-badge icon"></i> ADFS Roles</span>
-                        <span class="badge bg-warning rounded-pill" id="adfs-count">0</span>
-                    </div>
-                    <div class="card-body">
-                        <table id="table-adfs" class="table table-striped" style="width:100%"></table>
-                    </div>
-                </div>
+      <div class="row" id="adfs">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-person-badge icon"></i> ADFS Roles</span>
+              <span class="badge bg-warning rounded-pill" id="adfs-count"
+                >0</span
+              >
             </div>
+            <div class="card-body">
+              <table
+                id="table-adfs"
+                class="table table-striped"
+                style="width: 100%"
+              ></table>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="row" id="tfe">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <span><i class="bi bi-building icon"></i> TFE Roles</span>
-                        <span class="badge bg-danger rounded-pill" id="tfe-count">0</span>
-                    </div>
-                    <div class="card-body">
-                        <table id="table-tfe" class="table table-striped" style="width:100%"></table>
-                    </div>
-                </div>
+      <div class="row" id="tfe">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-building icon"></i> TFE Roles</span>
+              <span class="badge bg-danger rounded-pill" id="tfe-count">0</span>
             </div>
+            <div class="card-body">
+              <table
+                id="table-tfe"
+                class="table table-striped"
+                style="width: 100%"
+              ></table>
+            </div>
+          </div>
         </div>
+      </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -455,240 +226,6 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script>
-        document.getElementById('burgerMenu').addEventListener('click', function() {
-            document.getElementById('headerNav').classList.toggle('show');
-        });
-        
-        let data = {
-            accounts: [],
-            cidrs: [],
-            clusters: [],
-            adfs: [],
-            tfe: []
-        };
-
-        let filters = {
-            applications: new Set(),
-            environments: new Set(),
-            regions: new Set()
-        };
-
-        let tables = {};
-        
-        let filterSelects = {};
-
-        async function loadCSV(filename) {
-            const response = await fetch(filename);
-            const text = await response.text();
-            return Papa.parse(text, { header: true, skipEmptyLines: true }).data;
-        }
-
-        async function initData() {
-            try {
-                data.accounts = await loadCSV('data/account.csv');
-                data.cidrs = await loadCSV('data/cidr.csv');
-                data.clusters = await loadCSV('data/cluster.csv');
-                data.adfs = await loadCSV('data/adfs.csv');
-                data.tfe = await loadCSV('data/tfe.csv');
-                
-                extractFilters();
-                initFilters();
-                initTables();
-                updateStats();
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
-        function extractFilters() {
-            data.accounts.forEach(acc => {
-                filters.applications.add(acc.Application);
-                filters.environments.add(acc.Environment);
-            });
-            
-            data.cidrs.forEach(c => filters.regions.add(c.Region));
-            data.clusters.forEach(c => filters.regions.add(c.Region));
-        }
-
-        function initFilters() {
-            const sortedApps = Array.from(filters.applications).sort();
-            const sortedEnvs = Array.from(filters.environments).sort();
-            const sortedRegions = Array.from(filters.regions).sort();
-            
-            const options = {
-                theme: 'bootstrap-5',
-                width: '100%',
-                closeOnSelect: false,
-                allowClear: true,
-                placeholder: 'Select...'
-            };
-            
-            filterSelects.application = $('#filter-application');
-            filterSelects.application.select2({
-                ...options,
-                data: sortedApps.map(v => ({ id: v, text: v })),
-                allowClear: false
-            });
-            
-            filterSelects.environment = $('#filter-environment');
-            filterSelects.environment.select2({
-                ...options,
-                data: sortedEnvs.map(v => ({ id: v, text: v })),
-                allowClear: false
-            });
-            
-            filterSelects.region = $('#filter-region');
-            filterSelects.region.select2({
-                ...options,
-                data: sortedRegions.map(v => ({ id: v, text: v })),
-                allowClear: false
-            });
-            
-            filterSelects.application.on('change', handleFilterChange);
-            filterSelects.environment.on('change', handleFilterChange);
-            filterSelects.region.on('change', handleFilterChange);
-            
-            document.getElementById('clear-filters').addEventListener('click', clearFilters);
-        }
-
-        function handleFilterChange() {
-            filterTables();
-        }
-
-        function getSelectedFilters(type) {
-            return filterSelects[type].val() || [];
-        }
-
-        function clearFilters() {
-            filterSelects.application.val(sortedApps).trigger('change');
-            filterSelects.environment.val(sortedEnvs).trigger('change');
-            filterSelects.region.val(sortedRegions).trigger('change');
-        }
-        
-        let sortedApps, sortedEnvs, sortedRegions;
-
-        function filterTables() {
-            const selectedApps = getSelectedFilters('application');
-            const selectedEnvs = getSelectedFilters('environment');
-            const selectedRegions = getSelectedFilters('region');
-            
-            const accountIds = new Set(
-                data.accounts
-                    .filter(acc => selectedApps.includes(acc.Application) && selectedEnvs.includes(acc.Environment))
-                    .map(acc => acc.AccountId)
-            );
-            
-            const appSet = new Set(selectedApps);
-            
-            const filteredData = {
-                accounts: data.accounts.filter(acc => 
-                    selectedApps.includes(acc.Application) && selectedEnvs.includes(acc.Environment)
-                ),
-                cidrs: data.cidrs.filter(cidr => 
-                    accountIds.has(cidr.Account) && selectedRegions.includes(cidr.Region)
-                ),
-                clusters: data.clusters.filter(cluster => 
-                    accountIds.has(cluster.Account) && selectedRegions.includes(cluster.Region)
-                ),
-                adfs: data.adfs.filter(adfs => accountIds.has(adfs.Account)),
-                tfe: data.tfe.filter(tfe => appSet.has(tfe.Application))
-            };
-            
-            Object.keys(tables).forEach(key => {
-                tables[key].clear();
-                tables[key].rows.add(filteredData[key]);
-                tables[key].draw();
-            });
-            
-            document.getElementById('account-count').textContent = filteredData.accounts.length;
-            document.getElementById('cidr-count').textContent = filteredData.cidrs.length;
-            document.getElementById('cluster-count').textContent = filteredData.clusters.length;
-            document.getElementById('adfs-count').textContent = filteredData.adfs.length;
-            document.getElementById('tfe-count').textContent = filteredData.tfe.length;
-        }
-
-        function updateStats() {
-            document.getElementById('stat-accounts').textContent = data.accounts.length;
-            document.getElementById('stat-cidrs').textContent = data.cidrs.length;
-            document.getElementById('stat-clusters').textContent = data.clusters.length;
-            document.getElementById('stat-adfs').textContent = data.adfs.length;
-            document.getElementById('stat-tfe').textContent = data.tfe.length;
-        }
-
-        function initTables() {
-            sortedApps = Array.from(filters.applications).sort();
-            sortedEnvs = Array.from(filters.environments).sort();
-            sortedRegions = Array.from(filters.regions).sort();
-            
-            filterSelects.application.val(sortedApps).trigger('change');
-            filterSelects.environment.val(sortedEnvs).trigger('change');
-            filterSelects.region.val(sortedRegions).trigger('change');
-            
-            tables.accounts = $('#table-accounts').DataTable({
-                data: data.accounts,
-                columns: [
-                    { title: 'Account ID', data: 'AccountId', render: (data) => `<code>${data}</code>` },
-                    { title: 'Application', data: 'Application' },
-                    { title: 'Environment', data: 'Environment', render: (data) => {
-                        const colors = { DEV: 'success', UAT: 'warning', RTB: 'info', PROD: 'danger' };
-                        return `<span class="badge bg-${colors[data] || 'secondary'}">${data}</span>`;
-                    }}
-                ],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries" }
-            });
-            
-            tables.cidrs = $('#table-cidr').DataTable({
-                data: data.cidrs,
-                columns: [
-                    { title: 'Account', data: 'Account', render: (data) => `<code>${data}</code>` },
-                    { title: 'Region', data: 'Region' },
-                    { title: 'CIDR', data: 'CIDR', render: (data) => `<code>${data}</code>` }
-                ],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries" }
-            });
-            
-            tables.clusters = $('#table-cluster').DataTable({
-                data: data.clusters,
-                columns: [
-                    { title: 'Account', data: 'Account', render: (data) => `<code>${data}</code>` },
-                    { title: 'Tier', data: 'Tier' },
-                    { title: 'Region', data: 'Region' },
-                    { title: 'Base Domain', data: 'BaseDomain' },
-                    { title: 'Console', data: 'URL', render: (data) => 
-                        data ? `<a href="${data}" target="_blank" class="cluster-link"><i class="bi bi-box-arrow-up-right"></i> Open</a>` : '-'
-                    }
-                ],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries" }
-            });
-            
-            tables.adfs = $('#table-adfs').DataTable({
-                data: data.adfs,
-                columns: [
-                    { title: 'Account', data: 'Account', render: (data) => `<code>${data}</code>` },
-                    { title: 'AWS Role Name', data: 'AWSRoleName' }
-                ],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries" }
-            });
-            
-            tables.tfe = $('#table-tfe').DataTable({
-                data: data.tfe,
-                columns: [
-                    { title: 'Application', data: 'Application' },
-                    { title: 'TFE Role Name', data: 'TFERoleName' }
-                ],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries" }
-            });
-            
-            document.getElementById('account-count').textContent = data.accounts.length;
-            document.getElementById('cidr-count').textContent = data.cidrs.length;
-            document.getElementById('cluster-count').textContent = data.clusters.length;
-            document.getElementById('adfs-count').textContent = data.adfs.length;
-            document.getElementById('tfe-count').textContent = data.tfe.length;
-        }
-
-        $(document).ready(() => initData());
-    </script>
-</body>
+    <script src="js/app.js"></script>
+  </body>
 </html>
