@@ -32,6 +32,7 @@
         <i class="bi bi-aws aws-icon"></i> AWS Cloud Environment Dashboard
       </h1>
       <nav class="header-nav" id="headerNav">
+        <a href="#summary"><i class="bi bi-grid"></i> Summary</a>
         <a href="#accounts"><i class="bi bi-cloud"></i> Accounts</a>
         <a href="#cidrs"><i class="bi bi-hdd"></i> CIDRs</a>
         <a href="#clusters"><i class="bi bi-diagram-3"></i> Clusters</a>
@@ -117,6 +118,20 @@
           <div>
             <div class="stat-value" id="stat-tfe">0</div>
             <div class="stat-label">TFE Roles</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="summary">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span><i class="bi bi-grid icon"></i> Summary</span>
+              <span class="badge bg-secondary rounded-pill" id="summary-count">0</span>
+            </div>
+            <div class="card-body">
+              <table id="table-summary" class="table table-striped" style="width: 100%"></table>
+            </div>
           </div>
         </div>
       </div>

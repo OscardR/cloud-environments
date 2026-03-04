@@ -116,7 +116,7 @@ function clearFilters() {
   filterSelects.region.val(sortedRegions).trigger("change");
 }
 
-function filterTables() {
+function getFilteredData() {
   const selectedApps = getSelectedFilters("application");
   const selectedEnvs = getSelectedFilters("environment");
   const selectedRegions = getSelectedFilters("region");
@@ -133,7 +133,7 @@ function filterTables() {
 
   const appSet = new Set(selectedApps);
 
-  const filteredData = {
+  return {
     accounts: data.accounts.filter(
       (acc) =>
         selectedApps.includes(acc.Application) &&
@@ -151,12 +151,111 @@ function filterTables() {
     adfs: data.adfs.filter((adfs) => accountIds.has(adfs.Account)),
     tfe: data.tfe.filter((tfe) => appSet.has(tfe.Application)),
   };
+}
 
-  Object.keys(tables).forEach((key) => {
-    tables[key].clear();
-    tables[key].rows.add(filteredData[key]);
-    tables[key].draw();
+function buildSummaryData(filteredData) {
+  const summaryMap = new Map();
+
+  filteredData.accounts.forEach((acc) => {
+    const key = acc.AccountId;
+    if (!summaryMap.has(key)) {
+      summaryMap.set(key, {
+        Application: acc.Application,
+        Environment: acc.Environment,
+        Account: acc.AccountId,
+        Tiers: [],
+        AWSRoles: [],
+        TFERoles: [],
+        CIDRs: [],
+      });
+    }
   });
+
+  filteredData.clusters.forEach((cluster) => {
+    const summary = summaryMap.get(cluster.Account);
+    if (summary) {
+      const tierUrl = cluster.URL
+        ? `${cluster.Tier} | <a href="${cluster.URL}" target="_blank" class="summary-link">Open</a>`
+        : cluster.Tier;
+      summary.Tiers.push(tierUrl);
+    }
+  });
+
+  filteredData.adfs.forEach((adfs) => {
+    const summary = summaryMap.get(adfs.Account);
+    if (summary) {
+      summary.AWSRoles.push(adfs.AWSRoleName);
+    }
+  });
+
+  filteredData.tfe.forEach((tfe) => {
+    const summary = Array.from(summaryMap.values()).find(
+      (s) => s.Application === tfe.Application,
+    );
+    if (summary) {
+      summary.TFERoles.push(tfe.TFERoleName);
+    }
+  });
+
+  filteredData.cidrs.forEach((cidr) => {
+    const summary = summaryMap.get(cidr.Account);
+    if (summary) {
+      summary.CIDRs.push(`${cidr.Region} | ${cidr.CIDR}`);
+    }
+  });
+
+  return Array.from(summaryMap.values()).map((s) => ({
+    Application: s.Application,
+    Environment: s.Environment,
+    Account: s.Account,
+    Tiers: s.Tiers.join("\n"),
+    AWSRoles: s.AWSRoles.join("\n"),
+    TFERoles: s.TFERoles.join("\n"),
+    CIDRs: s.CIDRs.join("\n"),
+  }));
+}
+
+function filterTables() {
+  if (!data.accounts.length) return;
+
+  const filteredData = getFilteredData();
+
+  if (tables.accounts) {
+    tables.accounts.clear();
+    tables.accounts.rows.add(filteredData.accounts);
+    tables.accounts.draw();
+  }
+
+  if (tables.cidrs) {
+    tables.cidrs.clear();
+    tables.cidrs.rows.add(filteredData.cidrs);
+    tables.cidrs.draw();
+  }
+
+  if (tables.clusters) {
+    tables.clusters.clear();
+    tables.clusters.rows.add(filteredData.clusters);
+    tables.clusters.draw();
+  }
+
+  if (tables.adfs) {
+    tables.adfs.clear();
+    tables.adfs.rows.add(filteredData.adfs);
+    tables.adfs.draw();
+  }
+
+  if (tables.tfe) {
+    tables.tfe.clear();
+    tables.tfe.rows.add(filteredData.tfe);
+    tables.tfe.draw();
+  }
+
+  if (tables.summary) {
+    const summaryData = buildSummaryData(filteredData);
+    tables.summary.clear();
+    tables.summary.rows.add(summaryData);
+    tables.summary.draw();
+  }
 
   document.getElementById("account-count").textContent =
     filteredData.accounts.length;
@@ -176,9 +275,55 @@ function updateStats() {
 }
 
 function initTables() {
-  filterSelects.application.val(sortedApps).trigger("change");
-  filterSelects.environment.val(sortedEnvs).trigger("change");
-  filterSelects.region.val(sortedRegions).trigger("change");
+  tables.summary = $("#table-summary").DataTable({
+    data: buildSummaryData(getFilteredData()),
+    columns: [
+      { title: "Application", data: "Application" },
+      {
+        title: "Environment",
+        data: "Environment",
+        render: (data) => {
+          const colors = {
+            DEV: "success",
+            UAT: "warning",
+            RTB: "info",
+            PROD: "danger",
+          };
+          return `<span class="badge bg-${colors[data] || "secondary"}">${data}</span>`;
+        },
+      },
+      {
+        title: "Account",
+        data: "Account",
+        render: (data) => `<code>${data}</code>`,
+      },
+      {
+        title: "Tiers",
+        data: "Tiers",
+        render: (data) => (data ? `<div class="summary-cell">${data}</div>` : "-"),
+      },
+      {
+        title: "AWS Roles",
+        data: "AWSRoles",
+        render: (data) =>
+          data ? `<div class="summary-cell">${data}</div>` : "-",
+      },
+      {
+        title: "TFE Roles",
+        data: "TFERoles",
+        render: (data) =>
+          data ? `<div class="summary-cell">${data}</div>` : "-",
+      },
+      {
+        title: "CIDRs",
+        data: "CIDRs",
+        render: (data) =>
+          data ? `<div class="summary-cell">${data}</div>` : "-",
+      },
+    ],
+    language: { search: "Search:", lengthMenu: "Show _MENU_ entries" },
+    scrollX: true,
+  });
 
   tables.accounts = $("#table-accounts").DataTable({
     data: data.accounts,
@@ -269,6 +414,12 @@ function initTables() {
   document.getElementById("cluster-count").textContent = data.clusters.length;
   document.getElementById("adfs-count").textContent = data.adfs.length;
   document.getElementById("tfe-count").textContent = data.tfe.length;
+
+  filterSelects.application.val(sortedApps).trigger("change");
+  filterSelects.environment.val(sortedEnvs).trigger("change");
+  filterSelects.region.val(sortedRegions).trigger("change");
+
+  document.getElementById("summary-count").textContent = buildSummaryData(getFilteredData()).length;
 }
 
 $(document).ready(() => initData());

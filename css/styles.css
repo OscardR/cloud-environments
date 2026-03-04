@@ -248,6 +248,22 @@ body {
     text-decoration: underline;
 }
 
+.summary-cell {
+    white-space: pre-line;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.summary-link {
+    color: #0d6efd;
+    text-decoration: none;
+    display: block;
+}
+
+.summary-link:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 992px) {
     .header-nav {
         display: none;
