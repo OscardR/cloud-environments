@@ -5,9 +5,40 @@
     --border-color: #dee2e6;
 }
 
+:root.dark-mode {
+    --bg-light: #1a1a2e;
+    --border-color: #3a3a5c;
+    --card-bg: #252542;
+    --text-color: #e0e0e0;
+    --text-muted: #a0a0a0;
+}
+
 body {
     min-height: 100vh;
     background: var(--bg-light);
+    color: #212529;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+:root.dark-mode body {
+    background: var(--bg-light);
+    color: var(--text-color);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    margin-left: 12px;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.15);
 }
 
 .sidebar {
@@ -145,6 +176,11 @@ body {
     font-size: 0.875rem;
 }
 
+.table>:not(caption)>*>* {
+    color: inherit;
+    background-color: inherit;
+}
+
 .table thead th {
     background: #f8f9fa;
     border-bottom: 2px solid var(--border-color);
@@ -262,6 +298,149 @@ body {
 
 .summary-link:hover {
     text-decoration: underline;
+}
+
+.summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.summary-list li {
+    margin-bottom: 4px;
+}
+
+.summary-list code {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+:root.dark-mode .summary-list code {
+    background: rgba(255,255,255,0.15);
+}
+
+:root.dark-mode .sidebar {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .filter-section {
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .filter-title {
+    color: var(--text-muted);
+}
+
+:root.dark-mode .card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .card-header {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+:root.dark-mode .table {
+    color: var(--text-color);
+}
+
+:root.dark-mode .table thead th {
+    background: #1a1a2e;
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .table tbody tr:hover {
+    background: #2a2a4a;
+}
+
+:root.dark-mode .table td {
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .stats-bar {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .stat-label {
+    color: var(--text-muted);
+}
+
+:root.dark-mode .select2-container--bootstrap-5 .select2-selection {
+    background: #1a1a2e;
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+:root.dark-mode .select2-dropdown {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .select2-results__option {
+    color: var(--text-color);
+}
+
+:root.dark-mode .select2-results__option--highlighted[aria-selected] {
+    background: #3a3a5c;
+}
+
+:root.dark-mode .dataTables_wrapper .form-control,
+:root.dark-mode .dataTables_wrapper select {
+    background: #1a1a2e;
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+:root.dark-mode .dataTables_wrapper .dataTables_length,
+:root.dark-mode .dataTables_wrapper .dataTables_filter,
+:root.dark-mode .dataTables_wrapper .dataTables_info,
+:root.dark-mode .dataTables_wrapper .dataTables_processing,
+:root.dark-mode .dataTables_wrapper .dataTables_paginate {
+    color: var(--text-color);
+}
+
+:root.dark-mode table.dataTable tbody tr {
+    background: var(--card-bg);
+}
+
+:root.dark-mode table.dataTable {
+    border-color: var(--border-color);
+}
+
+:root.dark-mode table.dataTable thead th,
+:root.dark-mode table.dataTable thead td {
+    background: #1a1a2e;
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+:root.dark-mode table.dataTable tbody th,
+:root.dark-mode table.dataTable tbody td {
+    border-color: var(--border-color);
+}
+
+:root.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--text-color) !important;
+}
+
+:root.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+:root.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #3a3a5c;
+    border-color: var(--border-color);
+    color: #fff !important;
+}
+
+:root.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #3a3a5c;
+    border-color: var(--border-color);
 }
 
 @media (max-width: 992px) {

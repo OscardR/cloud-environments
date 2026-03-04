@@ -2,6 +2,29 @@ document.getElementById("burgerMenu").addEventListener("click", function () {
   document.getElementById("headerNav").classList.toggle("show");
 });
 
+function initTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.documentElement.classList.add("dark-mode");
+    updateThemeIcon(true);
+  }
+}
+
+function updateThemeIcon(isDark) {
+  const icon = document.querySelector("#themeToggle i");
+  icon.className = isDark ? "bi bi-sun" : "bi bi-moon";
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  updateThemeIcon(isDark);
+}
+
+document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+
+initTheme();
+
 let data = {
   accounts: [],
   cidrs: [],
@@ -174,10 +197,7 @@ function buildSummaryData(filteredData) {
   filteredData.clusters.forEach((cluster) => {
     const summary = summaryMap.get(cluster.Account);
     if (summary) {
-      const tierUrl = cluster.URL
-        ? `${cluster.Tier} | <a href="${cluster.URL}" target="_blank" class="summary-link">Open</a>`
-        : cluster.Tier;
-      summary.Tiers.push(tierUrl);
+      summary.Tiers.push({ tier: cluster.Tier, url: cluster.URL });
     }
   });
 
@@ -200,7 +220,7 @@ function buildSummaryData(filteredData) {
   filteredData.cidrs.forEach((cidr) => {
     const summary = summaryMap.get(cidr.Account);
     if (summary) {
-      summary.CIDRs.push(`${cidr.Region} | ${cidr.CIDR}`);
+      summary.CIDRs.push({ region: cidr.Region, cidr: cidr.CIDR });
     }
   });
 
@@ -208,10 +228,10 @@ function buildSummaryData(filteredData) {
     Application: s.Application,
     Environment: s.Environment,
     Account: s.Account,
-    Tiers: s.Tiers.join("\n"),
-    AWSRoles: s.AWSRoles.join("\n"),
-    TFERoles: s.TFERoles.join("\n"),
-    CIDRs: s.CIDRs.join("\n"),
+    Tiers: s.Tiers,
+    AWSRoles: s.AWSRoles,
+    TFERoles: s.TFERoles,
+    CIDRs: s.CIDRs,
   }));
 }
 
@@ -300,7 +320,16 @@ function initTables() {
       {
         title: "Tiers",
         data: "Tiers",
-        render: (data) => (data ? `<div class="summary-cell">${data}</div>` : "-"),
+        render: (tiers) => {
+          if (!tiers || tiers.length === 0) return "-";
+          const items = tiers.map((t) => {
+            if (t.url) {
+              return `<li><a href="${t.url}" target="_blank" class="summary-link">${t.tier} <i class="bi bi-box-arrow-up-right"></i></a></li>`;
+            }
+            return `<li>${t.tier}</li>`;
+          }).join("");
+          return `<ul class="summary-list">${items}</ul>`;
+        },
       },
       {
         title: "AWS Roles",
@@ -317,8 +346,13 @@ function initTables() {
       {
         title: "CIDRs",
         data: "CIDRs",
-        render: (data) =>
-          data ? `<div class="summary-cell">${data}</div>` : "-",
+        render: (cidrs) => {
+          if (!cidrs || cidrs.length === 0) return "-";
+          const items = cidrs.map((c) => {
+            return `<li><span class="badge bg-info">${c.region}</span> <code>${c.cidr}</code></li>`;
+          }).join("");
+          return `<ul class="summary-list">${items}</ul>`;
+        },
       },
     ],
     language: { search: "Search:", lengthMenu: "Show _MENU_ entries" },
