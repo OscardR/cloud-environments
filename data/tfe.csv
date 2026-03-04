@@ -1,0 +1,10 @@
+Application,TFERoleName
+APP1,tfe-app1-admin
+APP1,tfe-app1-developer
+APP1,tfe-app1-plan
+APP2,tfe-app2-admin
+APP2,tfe-app2-developer
+APP2,tfe-app2-plan
+TEAM3,tfe-team3-admin
+TEAM3,tfe-team3-developer
+TEAM3,tfe-team3-plan

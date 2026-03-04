@@ -1,0 +1,17 @@
+Account,Tier,Region,BaseDomain,URL
+111111111111,tadpole,eu-west-1,dev.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111111,andromeda,eu-west-1,dev.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111112,sit01,eu-west-1,uat.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111112,medusa,eu-west-2,uat.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-2#/clusters
+111111111113,tadpole,eu-west-1,prod.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111113,andromeda,eu-west-1,prod.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111113,medusa,eu-west-2,prod.example.com,https://console.aws.amazon.com/eks/home?region=eu-west-2#/clusters
+111111111114,tadpole,eu-west-1,dev.app2.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111115,sit01,eu-west-1,uat.app2.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111116,tadpole,eu-west-1,prod.app2.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111116,medusa,eu-west-2,prod.app2.com,https://console.aws.amazon.com/eks/home?region=eu-west-2#/clusters
+111111111117,tadpole,eu-west-1,dev.team3.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111118,sit01,eu-west-1,uat.team3.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111119,medusa,eu-west-1,rtb.team3.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111120,tadpole,eu-west-1,prod.team3.com,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+111111111120,andromeda,eu-west-2,prod.team3.com,https://console.aws.amazon.com/eks/home?region=eu-west-2#/clusters
