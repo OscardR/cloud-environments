@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cloud-environments
+description: A Helm chart to deploy cloud-environments application
+type: application
+version: 0.0.1
+appVersion: "0.0.1"

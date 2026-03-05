@@ -1,0 +1,35 @@
+global:
+  registry: docker.io
+  image: oscar001/cloud-environments
+  tag: 0.0.1
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 80
+
+configMaps:
+  cluster.csv: |
+    Account,Tier,Region,URL
+    111111111111,tadpole,eu-west-1,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+    111111111111,andromeda,eu-west-1,https://console.aws.amazon.com/eks/home?region=eu-west-1#/clusters
+  account.csv: |
+    AccountId,Application,Environment
+    111111111111,APP1,DEV
+    111111111112,APP1,UAT
+
+ingress:
+  enabled: false
+  # className: ""
+  # annotations: {}
+  # hosts: []
+  # tls: []
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 50m
+  #   memory: 64Mi

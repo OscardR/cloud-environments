@@ -1,0 +1,47 @@
+{{- $fullName := include "cloud-environments.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "cloud-environments.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "cloud-environments.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cloud-environments.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "cloud-environments.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+{{- range $key, $value := .Values.configMaps }}
+            - name: {{ $key }}
+              mountPath: /usr/share/nginx/html/data/{{ $key }}
+              subPath: {{ $key }}
+{{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+{{- range $key, $value := .Values.configMaps }}
+        - name: {{ $key }}
+          configMap:
+            name: {{ $fullName }}-{{ $key }}
+{{- end }}

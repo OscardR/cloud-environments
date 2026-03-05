@@ -1,0 +1,13 @@
+{{- $release := .Release -}}
+{{- range $key, $value := .Values.configMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $release.Name }}-{{ $key }}
+  labels:
+    {{- include "cloud-environments.labels" $ | nindent 4 }}
+data:
+  {{ $key }}: |
+{{ $value | indent 4 }}
+---
+{{- end }}
