@@ -297,6 +297,7 @@ function updateStats() {
 function initTables() {
   tables.summary = $("#table-summary").DataTable({
     data: buildSummaryData(getFilteredData()),
+    style: "bootstrap5",
     columns: [
       { title: "Application", data: "Application" },
       {
@@ -322,12 +323,14 @@ function initTables() {
         data: "Tiers",
         render: (tiers) => {
           if (!tiers || tiers.length === 0) return "-";
-          const items = tiers.map((t) => {
-            if (t.url) {
-              return `<li><a href="${t.url}" target="_blank" class="summary-link">${t.tier} <i class="bi bi-box-arrow-up-right"></i></a></li>`;
-            }
-            return `<li>${t.tier}</li>`;
-          }).join("");
+          const items = tiers
+            .map((t) => {
+              if (t.url) {
+                return `<li><a href="${t.url}" target="_blank" class="summary-link">${t.tier} <i class="bi bi-box-arrow-up-right"></i></a></li>`;
+              }
+              return `<li>${t.tier}</li>`;
+            })
+            .join("");
           return `<ul class="summary-list">${items}</ul>`;
         },
       },
@@ -354,9 +357,11 @@ function initTables() {
         data: "CIDRs",
         render: (cidrs) => {
           if (!cidrs || cidrs.length === 0) return "-";
-          const items = cidrs.map((c) => {
-            return `<li><span class="badge bg-info">${c.region}</span> <code>${c.cidr}</code></li>`;
-          }).join("");
+          const items = cidrs
+            .map((c) => {
+              return `<li><span class="badge bg-info">${c.region}</span> <code>${c.cidr}</code></li>`;
+            })
+            .join("");
           return `<ul class="summary-list">${items}</ul>`;
         },
       },
@@ -460,7 +465,8 @@ function initTables() {
   filterSelects.environment.val(sortedEnvs).trigger("change");
   filterSelects.region.val(sortedRegions).trigger("change");
 
-  document.getElementById("summary-count").textContent = buildSummaryData(getFilteredData()).length;
+  document.getElementById("summary-count").textContent =
+    buildSummaryData(getFilteredData()).length;
 }
 
 $(document).ready(() => initData());
