@@ -60,3 +60,14 @@
 - Dark mode: translucent purple-blue (`rgba(113, 146, 255, 0.15)`) with matching text
 - Remove term button styled to match badge colors in both modes
 - Added dark mode styling for dropdown search field
+
+### Responsive Filter Menu
+
+**Files modified:** `index.html`, `css/styles.css`, `js/app.js`
+
+- Added filter menu button (funnel icon) next to burger menu in header
+- Initially created duplicate mobile filter HTML - caused sync issues with select2
+- Simplified approach: filter button toggles sidebar visibility in narrow mode
+- Sidebar slides in from left with existing filters (no HTML duplication)
+- Removed unused filter-dropdown CSS rules
+- Fixed event listener timing by wrapping in DOMContentLoaded

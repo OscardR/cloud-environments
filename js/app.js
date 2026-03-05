@@ -1,5 +1,13 @@
-document.getElementById("burgerMenu").addEventListener("click", function () {
-  document.getElementById("headerNav").classList.toggle("show");
+console.log("app.js loaded");
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("burgerMenu").addEventListener("click", function () {
+    document.getElementById("headerNav").classList.toggle("show");
+  });
+
+  document.getElementById("filterMenu").addEventListener("click", function () {
+    document.getElementById("sidebar").classList.toggle("show");
+  });
 });
 
 function initTheme() {
@@ -123,6 +131,8 @@ function initFilters() {
   document
     .getElementById("clear-filters")
     .addEventListener("click", clearFilters);
+
+  clearFilters();
 }
 
 function handleFilterChange() {

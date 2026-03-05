@@ -2,6 +2,7 @@
   --sidebar-width: 280px;
   --header-height: 60px;
   --bg-light: #f8f9fa;
+  --card-bg: #ffffff;
   --border-color: #dee2e6;
 }
 
@@ -120,6 +121,17 @@ body {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px 8px;
+}
+
+.filter-menu {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 8px;
 }
 
 .filter-section {
@@ -568,6 +580,10 @@ body {
   .burger-menu {
     display: block;
     margin-left: auto;
+  }
+
+  .filter-menu {
+    display: block;
   }
 
   .sidebar {
