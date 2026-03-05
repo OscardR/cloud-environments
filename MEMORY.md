@@ -71,3 +71,6 @@
 - Sidebar slides in from left with existing filters (no HTML duplication)
 - Removed unused filter-dropdown CSS rules
 - Fixed event listener timing by wrapping in DOMContentLoaded
+- Added sidebar overlay (`.sidebar-overlay`) for mobile - dark translucent backdrop
+- Sidebar now has subtle drop shadow (`box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08)`)
+- Click overlay to close sidebar in mobile mode

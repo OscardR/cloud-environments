@@ -55,6 +55,7 @@ body {
   border-right: 1px solid var(--border-color);
   overflow-y: auto;
   z-index: 100;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
 }
 
 .main-content {
@@ -132,6 +133,17 @@ body {
   cursor: pointer;
   padding: 4px 8px;
   margin-left: 8px;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
 }
 
 .filter-section {
@@ -361,7 +373,7 @@ body {
 }
 
 :root.dark-mode .summary-list code {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 :root.dark-mode .sidebar {
@@ -593,6 +605,14 @@ body {
 
   .sidebar.show {
     transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: none;
+  }
+
+  .sidebar-overlay.show {
+    display: block;
   }
 
   .main-content {

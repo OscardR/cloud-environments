@@ -6,7 +6,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("filterMenu").addEventListener("click", function () {
-    document.getElementById("sidebar").classList.toggle("show");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    sidebar.classList.toggle("show");
+    overlay.classList.toggle("show");
+  });
+
+  document.getElementById("sidebarOverlay").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    sidebar.classList.remove("show");
+    overlay.classList.remove("show");
   });
 });
 
